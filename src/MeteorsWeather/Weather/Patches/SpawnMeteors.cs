@@ -22,24 +22,10 @@ internal static class SpawnMeteors
             if (!behaviorObject.activeSelf)
                 return;
 
-            var landTimeStart = MeteorWeatherMeteorsWorld.ClockToTime("8:30AM");
-            var landTimeEnd = MeteorWeatherMeteorsWorld.ClockToTime("8:40AM");
-            var landInterval = 0.2f;
+            var landTimeStart = MeteorWeatherMeteorsWorld.ClockToTime("8:00AM");
+            var landTimeEnd = MeteorWeatherMeteorsWorld.ClockToTime("9:30AM");
+            var landInterval = 2f;
             var landIntervalNormalized = landInterval  / __instance.totalTime;
-
-            if (!behaviorScript.HasSpawnedInitialMeteors)
-            {
-                behaviorScript.HasSpawnedInitialMeteors = true;
-
-                behaviorScript.MeteorSpawnTimer = landTimeStart - MeteorWeatherMeteorsWorld.NormalizedTimeAmountToLand;
-
-                while (behaviorScript.MeteorSpawnTimer < 0)
-                {
-                    behaviorScript.GenerateMeteorToSend(behaviorScript.MeteorSpawnTimer);
-
-                    behaviorScript.MeteorSpawnTimer += landIntervalNormalized;
-                }
-            }    
 
             var landTime = behaviorScript.MeteorSpawnTimer + MeteorWeatherMeteorsWorld.NormalizedTimeAmountToLand;
             if (landTime > landTimeEnd)

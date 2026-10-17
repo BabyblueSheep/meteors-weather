@@ -25,52 +25,38 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
 
     // Tracks normalized day time, but only gets incremented after spawning a meteor.
     public float MeteorSpawnTimer { get; set; }
-    public bool HasSpawnedInitialMeteors { get; set; }
 
     public bool HasSetUpForThisDay { get; set; }
 
-    // https://discord.com/channels/1168655651455639582/1168656318345777313/1229245905379524680
-    public static float ClockToTime(string timeString) // doesnt work
+    // Modified from HUDManager.SetClock and https://discord.com/channels/1168655651455639582/1168656318345777313/1229245905379524680
+    public static float ClockToTime(string timeString)
     {
-        int numberOfHours = TimeOfDay.Instance.numberOfHours;
-        float lengthOfHours = TimeOfDay.Instance.lengthOfHours;
-        float totalTime = TimeOfDay.Instance.totalTime;
+        var numberOfHours = TimeOfDay.Instance.numberOfHours;
 
-        int startHour = (24 - numberOfHours);
+        var timeParts = timeString.Split(':');
+        var hoursString = int.Parse(timeParts[0]);
+        var minutesString = int.Parse(timeParts[1][..2]);
+        var amPm = timeParts[1][2..];
 
-        // Split the time string into hours, minutes, and AM/PM
-        string[] timeParts = timeString.Split(':');
-        int hours = int.Parse(timeParts[0]);
-        int minutes = int.Parse(timeParts[1].Substring(0, 2)); // Extract minutes
-        string amPm = timeParts[1].Substring(2); // Extract AM/PM
-
-        // Convert hours to 24-hour format
-        if (amPm == "PM")
+        if (amPm == "PM" && hoursString != 12)
         {
-            hours += 12;
+            hoursString += 12;
         }
-        else if (amPm == "AM" && hours == 12)
+        if (amPm == "AM" && hoursString == 12)
         {
-            hours = 0;
+            hoursString += 12;
         }
 
+        var totalTime = hoursString * 60 + minutesString;
+        var timeNormalized = (totalTime - 360) / (60f * numberOfHours);
 
-        // Calculate the total number of minutes
-        hours = hours - startHour;
-        float totalMinutes = (hours * lengthOfHours) + minutes;
-
-        // Convert total minutes to normalized time
-        float normalizedTime = totalMinutes / totalTime; // Assuming 24-hour day
-
-        return normalizedTime;
-
-        // 6:00AM - 0
+        return timeNormalized;
     }
 
     public void SetUpForThisDay()
     {
-        MeteorSpawnTimer = 0;
-        HasSpawnedInitialMeteors = false;
+        var landTimeStart = ClockToTime("8:00AM");
+        MeteorSpawnTimer = landTimeStart - NormalizedTimeAmountToLand;
 
         _random = new System.Random(StartOfRound.Instance.randomMapSeed + 12);
 
