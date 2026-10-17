@@ -16,6 +16,8 @@ public partial class Plugin : BaseUnityPlugin
 {
     internal new static ManualLogSource Logger { get; private set; } = null!;
 
+    public static MeteorWeathersConfig MeteorWeathersConfig { get; private set; } = null!;
+
     private readonly Harmony _harmony = new(Id);
 
     private void Awake()
@@ -23,6 +25,7 @@ public partial class Plugin : BaseUnityPlugin
         PatchNetcodeMethods();
 
         Logger = base.Logger;
+        MeteorWeathersConfig = new MeteorWeathersConfig(Config);
 
         MeteorWeatherRegistry.Register();
         MeteorWeatherPatchLoader.Load(_harmony);

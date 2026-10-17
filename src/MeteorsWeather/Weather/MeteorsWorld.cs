@@ -28,34 +28,9 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
 
     public bool HasSetUpForThisDay { get; set; }
 
-    // Modified from HUDManager.SetClock and https://discord.com/channels/1168655651455639582/1168656318345777313/1229245905379524680
-    public static float ClockToTime(string timeString)
-    {
-        var numberOfHours = TimeOfDay.Instance.numberOfHours;
-
-        var timeParts = timeString.Split(':');
-        var hoursString = int.Parse(timeParts[0]);
-        var minutesString = int.Parse(timeParts[1][..2]);
-        var amPm = timeParts[1][2..];
-
-        if (amPm == "PM" && hoursString != 12)
-        {
-            hoursString += 12;
-        }
-        if (amPm == "AM" && hoursString == 12)
-        {
-            hoursString += 12;
-        }
-
-        var totalTime = hoursString * 60 + minutesString;
-        var timeNormalized = (totalTime - 360) / (60f * numberOfHours);
-
-        return timeNormalized;
-    }
-
     public void SetUpForThisDay()
     {
-        var landTimeStart = ClockToTime("8:00AM");
+        var landTimeStart = TimeUtils.ClockToTime("8:00AM");
         MeteorSpawnTimer = landTimeStart - NormalizedTimeAmountToLand;
 
         _random = new System.Random(StartOfRound.Instance.randomMapSeed + 12);

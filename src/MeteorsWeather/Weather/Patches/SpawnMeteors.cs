@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using MeteorsWeather.Utils;
 
 namespace MeteorsWeather.Weather.Patches;
 
@@ -22,8 +23,7 @@ internal static class SpawnMeteors
             if (!behaviorObject.activeSelf)
                 return;
 
-            var landTimeStart = MeteorWeatherMeteorsWorld.ClockToTime("8:00AM");
-            var landTimeEnd = MeteorWeatherMeteorsWorld.ClockToTime("9:30AM");
+            var landTimeEnd = TimeUtils.ClockToTime("9:30AM");
             var landInterval = 2f;
             var landIntervalNormalized = landInterval  / __instance.totalTime;
 

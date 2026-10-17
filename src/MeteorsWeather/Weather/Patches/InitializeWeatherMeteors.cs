@@ -12,8 +12,6 @@ static class InitializeWeatherMeteors
 {
     internal static void InitializeMeteors((SelectableLevel level, WeatherRegistry.Weather weather) param)
     {
-        Plugin.Logger.LogInfo($"test0 {MeteorWeatherMeteorsWorld.ClockToTime("8:30AM")} {MeteorWeatherMeteorsWorld.ClockToTime("9:00PM")}");
-
         var behaviorObject = MeteorWeatherRegistry.MeteorShowerWeather.Effect.WorldObject;
         var behaviorScript = behaviorObject.GetComponent<MeteorWeatherMeteorsWorld>();
 
