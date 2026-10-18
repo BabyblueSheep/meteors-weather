@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using WeatherRegistry;
 
 namespace MeteorsWeather.Weather.Patches;
 
@@ -11,6 +12,25 @@ internal static class PreventNaturalMeteorShowerEvent
         if (!__instance.IsServer)
             return;
 
-        __instance.meteorShowerAtTime = -1f;
+        var shouldDisable = false;
+
+        if (Plugin.MeteorWeathersConfig.IsMeteorsEventEnabled.Value == MeteorWeathersConfig.VanillaMeteorEventStatus.Disabled)
+        {
+            shouldDisable = true;
+        }
+        else if (Plugin.MeteorWeathersConfig.IsMeteorsEventEnabled.Value == MeteorWeathersConfig.VanillaMeteorEventStatus.EnabledOutsideMeteorShowerWeather)
+        {
+            var behaviorObject = MeteorWeatherRegistry.MeteorShowerWeather.Effect.WorldObject;
+
+            if (behaviorObject != null && behaviorObject.activeSelf)
+            {
+                shouldDisable = true;
+            }
+        }
+
+        if (shouldDisable)
+        {
+            __instance.meteorShowerAtTime = -1f;
+        }
     }
 }

@@ -12,18 +12,12 @@ public static class TimeUtils
         if (timeParts.Length != 2)
             return false;
 
-        int hours, minutes;
-        try
-        {
-            hours = int.Parse(timeParts[0]);
-            minutes = int.Parse(timeParts[1][..2]);
-        }
-        catch
-        {
+        if (!int.TryParse(timeParts[0], out var hours))
             return false;
-        }
+        if (!int.TryParse(timeParts[1][..2], out var minutes))
+            return false;
 
-        if (timeParts[0].Length != 2)
+        if (timeParts[0].Length != 2 && timeParts[0].Length != 1)
             return false;
         if (timeParts[1][..2].Length != 2)
             return false;

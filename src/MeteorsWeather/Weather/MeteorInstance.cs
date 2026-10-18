@@ -45,6 +45,8 @@ internal class MeteorInstance : IDisposable
 
     public GameObject MeteorPrefab { get; private set; }
     public GameObject DistantSpritePrefab { get; private set; }
+    public GameObject LandingExplosionPrefab { get; private set; }
+    public bool HasGivenAwayLandingExplosion { get; set; } = false;
 
     public bool ShouldBeRemoved { get; set; } = false;
 
@@ -90,6 +92,8 @@ internal class MeteorInstance : IDisposable
             rotation: UnityEngine.Quaternion.identity,
             parent: RoundManager.Instance.mapPropsContainer.transform
         );
+
+        LandingExplosionPrefab = null!;
 
         #endregion
     }
@@ -260,23 +264,21 @@ internal class MeteorInstance : IDisposable
 
     private static WaitForSeconds _waitForSeconds0_05 = new(0.05f);
     private static WaitForSeconds _waitForSeconds0_6 = new(0.6f);
-    private static WaitForSeconds _waitForSeconds2 = new(2f);
-
 
     private IEnumerator Land()
     {
         yield return _waitForSeconds0_05;
 
-        var explosionPrefab = UnityEngine.Object.Instantiate
+        LandingExplosionPrefab = UnityEngine.Object.Instantiate
         (
             VanillaMeteorLandingExplosionPrefab,
             position: LandingPosition,
             rotation: UnityEngine.Quaternion.Euler(-90f, 0f, 0f),
             parent: RoundManager.Instance.mapPropsContainer.transform
         );
-        explosionPrefab.transform.localScale = UnityEngine.Vector3.one * Scale;
+        LandingExplosionPrefab.transform.localScale = UnityEngine.Vector3.one * Scale;
 
-        var explosionAudioSources = explosionPrefab.GetComponentsInChildren<AudioSource>();
+        var explosionAudioSources = LandingExplosionPrefab.GetComponentsInChildren<AudioSource>();
         for (int i = 0; i < explosionAudioSources.Length; i++)
         {
             if (GameNetworkManager.Instance.localPlayerController.isInsideFactory)
@@ -294,10 +296,10 @@ internal class MeteorInstance : IDisposable
             WalkieTalkie.TransmitOneShotAudio(explosionAudioSources[i], explosionAudioSources[i].clip);
         }
 
-        ParticleSystem[] explosionParticles = explosionPrefab.GetComponentsInChildren<ParticleSystem>();
+        ParticleSystem[] explosionParticles = LandingExplosionPrefab.GetComponentsInChildren<ParticleSystem>();
         for (int j = 0; j < explosionParticles.Length; j++)
         {
-            explosionParticles[j].transform.localScale = explosionPrefab.transform.localScale * 0.12f;
+            explosionParticles[j].transform.localScale = LandingExplosionPrefab.transform.localScale * 0.12f;
         }
 
         var localPlayerPosition = GameNetworkManager.Instance.localPlayerController.transform.position;
@@ -334,10 +336,6 @@ internal class MeteorInstance : IDisposable
             GameNetworkManager.Instance.localPlayerController.externalForceAutoFade += UnityEngine.Vector3.Normalize(localPlayerPosition - (LandingPosition - UnityEngine.Vector3.up * 20f)) * 85f / playerDistanceToLandingPosition;
         }
 
-        yield return _waitForSeconds2;
-
-        UnityEngine.Object.Destroy(explosionPrefab);
-
         yield return _waitForSeconds0_6;
 
         ShouldBeRemoved = true;
@@ -354,6 +352,10 @@ internal class MeteorInstance : IDisposable
 
             UnityEngine.Object.Destroy(MeteorPrefab);
             UnityEngine.Object.Destroy(DistantSpritePrefab);
+            if (!HasGivenAwayLandingExplosion)
+            {
+                UnityEngine.Object.Destroy(LandingExplosionPrefab);
+            }
 
             IsDisposed = true;
         }
