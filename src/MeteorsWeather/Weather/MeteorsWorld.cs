@@ -180,12 +180,14 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
             var landTimeAverage = Plugin.MeteorWeathersConfig.MeteorSpawnIntervalAverage.Value;
             if (landTimeAverage <= 0f)
             {
+                LogUtils.LogWarn($"{nameof(Plugin.MeteorWeathersConfig.MeteorSpawnIntervalAverage.Definition.Key)} has an invalid value of {landTimeAverage}. Using default value.");
                 landTimeAverage = (float)Plugin.MeteorWeathersConfig.MeteorSpawnIntervalAverage.DefaultValue;
             }
 
             var landTimeDeviation = Plugin.MeteorWeathersConfig.MeteorSpawnIntervalDeviation.Value;
             if (landTimeDeviation < 0f)
             {
+                LogUtils.LogWarn($"{nameof(Plugin.MeteorWeathersConfig.MeteorSpawnIntervalDeviation.Definition.Key)} has an invalid value of {landTimeDeviation}. Using default value.");
                 landTimeDeviation = (float)Plugin.MeteorWeathersConfig.MeteorSpawnIntervalDeviation.DefaultValue;
             }
 
@@ -193,6 +195,7 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
             landInterval += _random.NextFloat(-landTimeDeviation, landTimeDeviation);
             if (landInterval <= 0.1f)
             {
+                LogUtils.LogWarn($"The interval for meteor landing ended up being too small.");
                 landInterval = 0.1f;
             }
             var landIntervalNormalized = landInterval / totalTime;

@@ -33,6 +33,7 @@ public class MeteorWeathersConfig
     public ConfigEntry<string> LandStartTime { get; }
     public ConfigEntry<string> LandEndTime { get; }
     public ConfigEntry<float> LandDuration { get; }
+    public ConfigEntry<float> LandSpeed { get; }
 
     public ConfigEntry<float> MeteorSpawnIntervalAverage { get; }
     public ConfigEntry<float> MeteorSpawnIntervalDeviation { get; }
@@ -44,6 +45,7 @@ public class MeteorWeathersConfig
         configFile.SaveOnConfigSet = false;
 
         var timeFormatDescription = "Valid formats are {HH}:{MM}AM or {HH}:{MM}PM e.g. 10:45AM, 6:00PM";
+        var landMeaning = @"""Landing"" refers to meteors landing before getting close to the surface. ""Falling"" refers to meteors falling after getting close to the surface.";
 
 
 
@@ -72,8 +74,9 @@ public class MeteorWeathersConfig
             key: "StartingTimeForLanding",
             defaultValue: "8:30AM",
             description: @$"The time at which meteor landings will start.
-            {timeFormatDescription}.
-            Values earlier than 8:00AM are allowed, and meteors will land as the day begins."
+            {timeFormatDescription}
+            Values earlier than 8:00AM are allowed, and meteors will land as the day begins.
+            {landMeaning}"
         );
 
         LandEndTime = configFile.Bind
@@ -82,9 +85,10 @@ public class MeteorWeathersConfig
             key: "EndingTimeForLanding",
             defaultValue: "9:30PM",
             description: @$"The total time a meteor will take to land.
-            {timeFormatDescription}.
+            {timeFormatDescription}
             The value will be set to the value of {LandStartTime.Definition.Key} if it is lower than it.
-            Values earlier than 8:00AM may not work as expected, and continue landing for several minutes after the ending time."
+            Values earlier than 8:00AM may not work as expected, and continue landing for several minutes after the ending time.
+            {landMeaning}"
         );
 
         LandDuration = configFile.Bind
@@ -92,7 +96,17 @@ public class MeteorWeathersConfig
             section: "Weather",
             key: "LandingDuration",
             defaultValue: 1f,
-            description: @$"The total time a meteor will take to land, in hours."
+            description: @$"The total time a meteor will take to land, in hours.
+            {landMeaning}"
+        );
+
+        LandSpeed = configFile.Bind
+        (
+            section: "Weather",
+            key: "FallingSpeed",
+            defaultValue: 0.6f,
+            description: @$"The speed at which meteors will fall.
+            {landMeaning}"
         );
 
 

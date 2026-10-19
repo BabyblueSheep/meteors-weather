@@ -12,7 +12,6 @@ internal class MeteorInstance : IDisposable
 {
     // These match what's outputted, not what's found when decompiling
     public static float StartingHeightInSky => 2700f;
-    public static float LandingSpeed => 0.6f;
 
     public static GameObject VanillaMeteorPrefab { get; set; } = null!;
     public static GameObject VanillaDistantSpritePrefab { get; set; } = null!;
@@ -29,6 +28,7 @@ internal class MeteorInstance : IDisposable
 
     private bool _hasLanded = false;
 
+    private float _landingSpeed;
     public UnityEngine.Vector3 LandingPosition { get; set; }
     public UnityEngine.Vector3 SkyDirection { get; set; }
 
@@ -68,6 +68,13 @@ internal class MeteorInstance : IDisposable
 
         NormalizedTimeOfSpawning = normalizedSpawnTime;
         NormalizedTimeToLandAt = normalizedLandTime;
+
+        _landingSpeed = Plugin.MeteorWeathersConfig.LandSpeed.Value;
+        if (_landingSpeed <= 0f)
+        {
+            LogUtils.LogWarn($"{nameof(Plugin.MeteorWeathersConfig.LandSpeed.Definition.Key)} has an invalid value of {_landingSpeed}. Using default value.");
+            _landingSpeed = (float)Plugin.MeteorWeathersConfig.LandSpeed.DefaultValue;
+        }
 
         #region Initialize prefabs
 
@@ -201,7 +208,7 @@ internal class MeteorInstance : IDisposable
             }
         }
 
-        _landingTime = Mathf.Min(_landingTime + Time.deltaTime * LandingSpeed, 1.3f);
+        _landingTime = Mathf.Min(_landingTime + Time.deltaTime * _landingSpeed, 1.3f);
 
         MeteorPrefab.transform.localScale = UnityEngine.Vector3.one * Scale;
 
