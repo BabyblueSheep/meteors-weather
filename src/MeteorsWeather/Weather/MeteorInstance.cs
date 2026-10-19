@@ -262,8 +262,8 @@ internal class MeteorInstance : IDisposable
         }
     }
 
-    private static WaitForSeconds _waitForSeconds0_05 = new(0.05f);
-    private static WaitForSeconds _waitForSeconds0_6 = new(0.6f);
+    private readonly static WaitForSeconds _waitForSeconds0_05 = new(0.05f);
+    private readonly static WaitForSeconds _waitForSeconds0_6 = new(0.6f);
 
     private IEnumerator Land()
     {

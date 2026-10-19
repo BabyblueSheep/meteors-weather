@@ -172,6 +172,8 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
                 _hasLoggedStartOfShower = true;
             }
 
+            LogUtils.LogDebug($"Generating meteor to land at {HUDManager.Instance.GetClockTimeFormatted(_meteorSpawnTimer, TimeOfDay.Instance.numberOfHours, createNewLine: false)}");
+
             GenerateMeteorToSend(_meteorSpawnTimer);
 
 
