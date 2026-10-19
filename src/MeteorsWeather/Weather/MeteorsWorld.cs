@@ -1,11 +1,12 @@
-﻿using System;
+﻿using MeteorsWeather.Utils;
+using System;
 using System.Collections;
-using System.Numerics;
 using System.Collections.Generic;
+using System.Numerics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
-using MeteorsWeather.Utils;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace MeteorsWeather.Weather;
 
@@ -20,8 +21,6 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
 
     public static float SkyAngularTilt => 0.5f;
 
-    public static float AverageMeteorScale => 8f;
-
     private List<MeteorScales> _meteorScaleConfigurations = [];
 
     public static float HourAmountToLand
@@ -30,7 +29,11 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
         {
             var value = Plugin.MeteorWeathersConfig.LandDuration.Value;
             if (value <= 0f)
-                return (float)Plugin.MeteorWeathersConfig.LandDuration.DefaultValue;
+            {
+                var defaultValue = (float)Plugin.MeteorWeathersConfig.LandDuration.DefaultValue;
+                LogUtils.LogWarn($"{nameof(Plugin.MeteorWeathersConfig.LandDuration.Definition.Key)} has an invalid value of {value}. Using default value.");
+                return defaultValue;
+            }
             return value;
         }
     }
@@ -40,6 +43,9 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
     private float _meteorSpawnTimer;
     private float _meteorSpawnStartTimer;
     private float _meteorSpawnEndTimer;
+
+    private bool _hasLoggedStartOfShower;
+    private bool _hasLoggedEndOfShower;
 
     public bool HasSetUpForThisDay { get; set; }
 
@@ -52,10 +58,12 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
 
         if (!TimeUtils.IsValidClock(startClockTime))
         {
+            LogUtils.LogWarn($"{nameof(Plugin.MeteorWeathersConfig.LandStartTime.Definition.Key)} has an invalid value of {startClockTime}. Using default value.");
             startClockTime = (string)Plugin.MeteorWeathersConfig.LandStartTime.DefaultValue;
         }
         if (!TimeUtils.IsValidClock(endClockTime))
         {
+            LogUtils.LogWarn($"{nameof(Plugin.MeteorWeathersConfig.LandEndTime.Definition.Key)} has an invalid value of {endClockTime}. Using default value.");
             endClockTime = (string)Plugin.MeteorWeathersConfig.LandEndTime.DefaultValue;
         }
 
@@ -73,6 +81,9 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
         _meteorSpawnTimer = _meteorSpawnStartTimer - NormalizedTimeAmountToLand;
 
         _random = new System.Random(StartOfRound.Instance.randomMapSeed + 12);
+
+        _hasLoggedStartOfShower = false;
+        _hasLoggedEndOfShower = false;
 
         foreach (var meteor in _fallingMeteors)
         {
@@ -127,6 +138,7 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
         var meteorScalesConfig = Plugin.MeteorWeathersConfig.MeteorScales.Value;
         if (!MeteorScalesUtils.IsValidList(meteorScalesConfig))
         {
+            LogUtils.LogWarn($"{nameof(Plugin.MeteorWeathersConfig.MeteorScales.Definition.Key)} has an invalid value of {meteorScalesConfig}. Using default value.");
             meteorScalesConfig = (string)Plugin.MeteorWeathersConfig.MeteorScales.DefaultValue;
         }
 
@@ -139,10 +151,27 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
     {
         var landTime = _meteorSpawnTimer + NormalizedTimeAmountToLand;
         if (landTime > _meteorSpawnEndTimer)
+        {
+            var logLevel = Plugin.MeteorWeathersConfig.LoggingLevel.Value;
+            if (logLevel >= MeteorWeathersConfig.LoggingLevels.Info)
+            {
+                if (!_hasLoggedEndOfShower)
+                {
+                    LogUtils.LogInfo($"Reached the ending time for landing. Stopping meteor showers for today.");
+                    _hasLoggedEndOfShower = true;
+                }
+            }
             return;
+        }
 
         while (_meteorSpawnTimer < currentNormalizedTime)
         {
+            if (!_hasLoggedStartOfShower)
+            {
+                LogUtils.LogInfo($"Reached the starting time for landing. Starting meteor showers for today.");
+                _hasLoggedStartOfShower = true;
+            }
+
             GenerateMeteorToSend(_meteorSpawnTimer);
 
 
@@ -167,6 +196,9 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
             var landIntervalNormalized = landInterval / totalTime;
 
             _meteorSpawnTimer += landIntervalNormalized;
+
+            if (landTime > _meteorSpawnEndTimer)
+                break;
         }
     }
 

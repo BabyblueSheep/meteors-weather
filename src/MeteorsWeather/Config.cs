@@ -18,6 +18,16 @@ public class MeteorWeathersConfig
         Disabled,
     }
 
+    public enum LoggingLevels
+    {
+        WarnError,
+        Info,
+        Debug,
+    }
+
+
+    public ConfigEntry<LoggingLevels> LoggingLevel { get; }
+
     public ConfigEntry<VanillaMeteorEventStatus> IsMeteorsEventEnabled { get; }
 
     public ConfigEntry<string> LandStartTime { get; }
@@ -37,9 +47,17 @@ public class MeteorWeathersConfig
 
 
 
+        LoggingLevel = configFile.Bind
+        (
+            section: "General",
+            key: "LoggingLevel",
+            defaultValue: LoggingLevels.Info,
+            description: @$"Controls the verbosity of logs."
+        );
+
         IsMeteorsEventEnabled = configFile.Bind
         (
-            section: "Weather",
+            section: "General",
             key: "IsMeteorShowerEventEnabled",
             defaultValue: VanillaMeteorEventStatus.Disabled,
             description: @$"Controls whether the vanilla meteor event is enabled or not.

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using MeteorsWeather.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,13 +20,22 @@ static class InitializeWeatherMeteors
             return;
 
         if (!MeteorInstance.VanillaMeteorPrefab)
+        {
+            LogUtils.LogDebug($"");
             MeteorInstance.VanillaMeteorPrefab = TimeOfDay.Instance.MeteorWeather.meteorPrefab;
+        }
         if (!MeteorInstance.VanillaDistantSpritePrefab)
+        {
             MeteorInstance.VanillaDistantSpritePrefab = TimeOfDay.Instance.MeteorWeather.distantSpritePrefab;
+        }
         if (!MeteorInstance.VanillaMeteorLandingExplosionPrefab)
+        {
             MeteorInstance.VanillaMeteorLandingExplosionPrefab = TimeOfDay.Instance.MeteorWeather.meteorLandingExplosion;
+        }
         if (!MeteorInstance.VanillaInsideFactoryMeteorClip)
+        {
             MeteorInstance.VanillaInsideFactoryMeteorClip = TimeOfDay.Instance.MeteorWeather.insideFactoryMeteorClip;
+        }
 
         behaviorScript.SetUpForThisDay();
 
