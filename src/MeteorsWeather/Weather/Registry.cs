@@ -13,11 +13,17 @@ public static class MeteorWeatherRegistry
 
     internal static void Register()
     {
-        var behaviorObject = new GameObject("MeteorWeatherBehavior");
-        behaviorObject.hideFlags = HideFlags.HideAndDontSave;
+        var behaviorObject = new GameObject("MeteorWeatherBehavior")
+        {
+            hideFlags = HideFlags.HideAndDontSave
+        };
         behaviorObject.AddComponent<MeteorWeatherMeteorsWorld>();
+        GameObject.DontDestroyOnLoad(behaviorObject);
 
-        MeteorShowerWeather = new WeatherRegistry.Weather("Meteor Shower", new ImprovedWeatherEffect(effectObject: null, worldObject: behaviorObject))
+        var improvedWeatherEffect = ScriptableObject.CreateInstance<ImprovedWeatherEffect>();
+        improvedWeatherEffect.WorldObject = behaviorObject;
+
+        MeteorShowerWeather = new WeatherRegistry.Weather("Meteor Shower", improvedWeatherEffect)
         {
             ColorGradient = ColorConverter.ToTMPColorGradient(new UnityEngine.Color(1f, 0.4f, 0f))
         };
