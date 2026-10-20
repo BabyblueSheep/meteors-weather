@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace MeteorsWeather.Weather;
 
-internal class MeteorInstance : IDisposable
+public class MeteorInstance : IDisposable
 {
     // These match what's outputted, not what's found when decompiling
     public static float StartingHeightInSky => 2700f;

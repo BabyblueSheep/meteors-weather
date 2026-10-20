@@ -41,11 +41,5 @@ static class InitializeWeatherMeteors
         }
 
         behaviorScript.SetUpForThisDay();
-
-        if (TimeOfDay.Instance.IsServer)
-        {
-            if (!behaviorObject.activeSelf)
-                return;
-        }
     }
 }

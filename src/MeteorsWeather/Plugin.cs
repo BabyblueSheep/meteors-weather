@@ -22,13 +22,13 @@ public partial class Plugin : BaseUnityPlugin
 
     private void Awake()
     {
-        PatchNetcodeMethods();
-
         Logger = base.Logger;
         MeteorWeathersConfig = new MeteorWeathersConfig(Config);
 
         MeteorWeatherRegistry.Register();
         MeteorWeatherPatchLoader.Load(_harmony);
+
+        PatchNetcodeMethods();
 
         Logger.LogInfo($"Plugin {Name} is loaded!");
     }

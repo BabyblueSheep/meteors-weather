@@ -6,11 +6,10 @@ using System.Numerics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace MeteorsWeather.Weather;
 
-public class MeteorWeatherMeteorsWorld : NetworkBehaviour
+public class MeteorWeatherMeteorsWorld : MonoBehaviour
 {
     private System.Random _random = null!;
 
@@ -104,11 +103,16 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
     private void FindMeteorLandSpots()
     {
         var averageLargeMeteorScale = 0f;
+        var largestMeteorScale = 0f;
         var totalWeight = 0f;
         foreach (var scaleConfiguration in _meteorScaleConfigurations)
         {
-            var largeScaleForThisConfig = scaleConfiguration.Average + scaleConfiguration.Deviation * 0.75f;
+            var largeScaleForThisConfig = scaleConfiguration.Average + scaleConfiguration.Deviation;
             averageLargeMeteorScale += largeScaleForThisConfig * scaleConfiguration.Weight;
+            if (largestMeteorScale <= largeScaleForThisConfig)
+            {
+                largestMeteorScale = largeScaleForThisConfig;
+            }
 
             totalWeight += scaleConfiguration.Weight;
         }
@@ -119,13 +123,11 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
         var entrancePosition = RoundManager.FindMainEntrancePosition(getTeleportPosition: true, getOutsideEntrance: true);
         var shipPosition = StartOfRound.Instance.shipLandingPosition.position;
 
-        var minimumPermittedDistance = averageLargeMeteorScale;
-
         foreach (var outsideNode in RoundManager.Instance.outsideAINodes)
         {
             var nodePosition = outsideNode.transform.position;
 
-            if (!(UnityEngine.Vector3.Distance(nodePosition, shipPosition) < minimumPermittedDistance * 2) && !(UnityEngine.Vector3.Distance(nodePosition, entrancePosition) < (minimumPermittedDistance + 24f)))
+            if (!(UnityEngine.Vector3.Distance(nodePosition, shipPosition) < largestMeteorScale * 2) && !(UnityEngine.Vector3.Distance(nodePosition, entrancePosition) < (averageLargeMeteorScale * 2)))
             {
                 _outsideAiNodes.Add(outsideNode);
             }
@@ -173,7 +175,7 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
                 _hasLoggedStartOfShower = true;
             }
 
-            LogUtils.LogDebug($"Generating meteor to land at {HUDManager.Instance.GetClockTimeFormatted(_meteorSpawnTimer, TimeOfDay.Instance.numberOfHours, createNewLine: false)}");
+            LogUtils.LogDebug($"Generating meteor to land at {HUDManager.Instance.GetClockTimeFormatted(_meteorSpawnTimer, TimeOfDay.Instance.numberOfHours, createNewLine: false)} ({_meteorSpawnTimer}).");
 
             GenerateMeteorToSendRpc(_meteorSpawnTimer);
 
@@ -273,7 +275,7 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
 
         var landTime = spawnTime + NormalizedTimeAmountToLand;
 
-        ReceiveMeteorRpc
+        MeteorSpawnSyncer.Instance.ReceiveMeteorRpc
         (
             landingPosition, skyDirection,
             landingSpeed,
@@ -282,26 +284,9 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
         );
     }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    private void ReceiveMeteorRpc
-    (
-        UnityEngine.Vector3 landingPosition,
-        UnityEngine.Vector3 skyDirection,
-        float landingSpeed,
-        float scale,
-        float normalizedSpawnTime,
-        float normalizedLandTime
-    )
+    public void AddMeteor(MeteorInstance meteor)
     {
-        var instance = new MeteorInstance
-        (
-            landingPosition, skyDirection,
-            landingSpeed,
-            scale,
-            normalizedSpawnTime, normalizedLandTime
-        );
-
-        _fallingMeteors.Add(instance);
+        _fallingMeteors.Add(meteor);
     }
 
 
@@ -332,7 +317,7 @@ public class MeteorWeatherMeteorsWorld : NetworkBehaviour
 
 
 
-    public override void OnDestroy()
+    public void OnDestroy()
     {
         foreach (var meteor in _fallingMeteors)
         {

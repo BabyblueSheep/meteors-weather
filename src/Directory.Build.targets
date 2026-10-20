@@ -36,13 +36,9 @@
     </ItemGroup>
 	
 	<!-- Patch Netcode -->
-	<!--
-	<ItemGroup>
-		<Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
-			<Exec Command="netcode-patch -uv 2022.3.62 -nv 1.12.2 -tv 1.0.0 &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')"/>
-		</Target>
-	</ItemGroup>
-	-->
+	<Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
+		<Exec Command="netcode-patch -uv 2022.3.62 -nv 1.12.2 -tv 1.0.0 &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')"/>
+	</Target>
 
     <!-- NuGet fallback stripped game references -->
     <ItemGroup Condition="!Exists('$(ManagedDir)')">
@@ -59,6 +55,7 @@
         <Reference Include="@(LocalReferences)" Private="false" />
 
         <Publicize Include="Assembly-CSharp" IncludeCompilerGeneratedMembers="false" />
+		<Publicize Include="Unity.Netcode.Runtime" IncludeCompilerGeneratedMembers="false" />
     </ItemGroup>
 
     <!-- Copy mod files defined in projects to the target BepInEx directory -->
