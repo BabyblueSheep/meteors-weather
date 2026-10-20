@@ -13,12 +13,12 @@ internal class MeteorSpawnSyncer : NetworkBehaviour
 
     public void Awake()
     {
-        Plugin.Logger.LogInfo("TEST555");
-
+        /*
         if (Instance != null)
         {
             UnityEngine.Object.Destroy(Instance.gameObject);
         }
+        */
         Instance = this;
     }
 

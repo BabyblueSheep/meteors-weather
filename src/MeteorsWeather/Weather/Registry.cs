@@ -30,7 +30,11 @@ public static class MeteorWeatherRegistry
         improvedWeatherEffect.WorldObject = weatherBehaviorObject;
         MeteorShowerWeather = new WeatherRegistry.Weather("Meteor Shower", improvedWeatherEffect)
         {
-            ColorGradient = ColorConverter.ToTMPColorGradient(new UnityEngine.Color(1f, 0.4f, 0f))
+            ColorGradient = ColorConverter.ToTMPColorGradient(new UnityEngine.Color(1f, 0.4f, 0f)),
+            Config =
+            {
+                WeatherToWeatherWeights = new WeatherWeightsConfigHandler(["None@300; Eclipsed@20"])
+            }
         };
         WeatherManager.RegisterWeather(MeteorShowerWeather);
 
