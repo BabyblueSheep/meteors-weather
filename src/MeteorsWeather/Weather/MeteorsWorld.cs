@@ -127,7 +127,7 @@ public class MeteorWeatherMeteorsWorld : MonoBehaviour
         {
             var nodePosition = outsideNode.transform.position;
 
-            if (!(UnityEngine.Vector3.Distance(nodePosition, shipPosition) < largestMeteorScale * 2) && !(UnityEngine.Vector3.Distance(nodePosition, entrancePosition) < (averageLargeMeteorScale * 2)))
+            if (!(UnityEngine.Vector3.Distance(nodePosition, shipPosition) < largestMeteorScale * 2) && !(UnityEngine.Vector3.Distance(nodePosition, entrancePosition) < (largestMeteorScale + 24f)))
             {
                 _outsideAiNodes.Add(outsideNode);
             }
@@ -313,6 +313,21 @@ public class MeteorWeatherMeteorsWorld : MonoBehaviour
                 meteor.Dispose();
             }
         }
+    }
+
+    public void OnDisable()
+    {
+        foreach (var meteor in _fallingMeteors)
+        {
+            meteor.Dispose();
+        }
+        _fallingMeteors.Clear();
+
+        foreach (var explosion in _explosions)
+        {
+            GameObject.Destroy(explosion);
+        }
+        _explosions.Clear();
     }
 
 
