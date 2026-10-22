@@ -51,8 +51,6 @@ public static class MeteorWeatherRegistry
         networkObject.GetComponent<NetworkObject>().SceneMigrationSynchronization = true;
         networkObject.GetComponent<NetworkObject>().DestroyWithScene = false;
 
-        // TODO: I don't like this method and I feel like there is a better way to do this.
-        // But I'm fed up with figuring out NGO so whatever
         //byte[] value = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Assembly.GetCallingAssembly().GetName().Name + networkObject.name));
         //networkObject.GetComponent<NetworkObject>().GlobalObjectIdHash = BitConverter.ToUInt32(value, 0);
 
