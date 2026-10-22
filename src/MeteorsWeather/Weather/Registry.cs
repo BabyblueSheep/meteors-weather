@@ -33,7 +33,7 @@ public static class MeteorWeatherRegistry
             ColorGradient = ColorConverter.ToTMPColorGradient(new UnityEngine.Color(1f, 0.4f, 0f)),
             Config =
             {
-                WeatherToWeatherWeights = new(["None@300; Eclipsed@20"])
+                WeatherToWeatherWeights = new(["None@300", "Eclipsed@20"])
             }
         };
         WeatherManager.RegisterWeather(MeteorShowerWeather);
