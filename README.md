@@ -2,7 +2,7 @@
 
 yep that's all that the mod does
 
-![Cropped screenshot of Artifice with increased meteor spawns.](https://github.com/BabyblueSheep/meteors-weather/tree/main/thunderstore/images/preview.png)
+![Cropped screenshot of Artifice with increased meteor spawns.](https://raw.githubusercontent.com/BabyblueSheep/meteors-weather/refs/heads/main/thunderstore/images/preview.png)
 
 Disables natural meteor showers, turning them into a proper weather that can appear on any moon! Also rebalances them slightly to make them a bit more forgiving: from 8:30AM to 9:30PM, a meteor will fall every 2-8 seconds.
 
