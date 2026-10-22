@@ -5,7 +5,7 @@
   "description": "Turns meteor showers into a proper weather!",
   "dependencies": [
     "BepInEx-BepInExPack-5.4.2100",
-    "mrov-MrovLib-0.4.2",
+    "mrov-MrovLib-0.4.15",
     "mrov-WeatherRegistry-0.8.8"
   ]
 }
