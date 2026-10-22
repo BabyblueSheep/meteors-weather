@@ -1,0 +1,11 @@
+{
+  "name": "Meteor_Showers_as_a_Weather",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/BabyblueSheep/meteors-weather",
+  "description": "Turns meteor showers into a proper weather!",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2100",
+	"mrov-MrovLib-0.4.2",
+	"mrov-WeatherRegistry-0.8.8"
+  ]
+}
