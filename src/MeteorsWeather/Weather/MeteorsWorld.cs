@@ -50,8 +50,11 @@ public class MeteorWeatherMeteorsWorld : MonoBehaviour
 
 
 
-    public void SetUpForThisDay()
+    public void OnEnable()
     {
+        if (!WeatherRegistry.WeatherManager.IsSetupFinished)
+            return;
+
         var startClockTime = Plugin.MeteorWeathersConfig.LandStartTime.Value;
         var endClockTime = Plugin.MeteorWeathersConfig.LandEndTime.Value;
 

@@ -51,8 +51,8 @@ public static class MeteorWeatherRegistry
         networkObject.GetComponent<NetworkObject>().SceneMigrationSynchronization = true;
         networkObject.GetComponent<NetworkObject>().DestroyWithScene = false;
 
-        //byte[] value = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Assembly.GetCallingAssembly().GetName().Name + networkObject.name));
-        //networkObject.GetComponent<NetworkObject>().GlobalObjectIdHash = BitConverter.ToUInt32(value, 0);
+        byte[] value = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(Assembly.GetCallingAssembly().GetName().Name + networkObject.name));
+        networkObject.GetComponent<NetworkObject>().GlobalObjectIdHash = BitConverter.ToUInt32(value, 0);
 
         GameObject.DontDestroyOnLoad(networkObject);
 

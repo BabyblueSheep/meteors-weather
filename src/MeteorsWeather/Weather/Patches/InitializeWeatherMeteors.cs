@@ -14,7 +14,7 @@ static class InitializeWeatherMeteors
     internal static void InitializeMeteors((SelectableLevel level, WeatherRegistry.Weather weather) param)
     {
         var behaviorObject = MeteorWeatherRegistry.MeteorShowerWeather.Effect.WorldObject;
-        var behaviorScript = behaviorObject.GetComponent<MeteorWeatherMeteorsWorld>();
+        //var behaviorScript = behaviorObject.GetComponent<MeteorWeatherMeteorsWorld>();
 
         if (behaviorObject == null)
             return;
@@ -40,6 +40,6 @@ static class InitializeWeatherMeteors
             MeteorInstance.VanillaInsideFactoryMeteorClip = TimeOfDay.Instance.MeteorWeather.insideFactoryMeteorClip;
         }
 
-        behaviorScript.SetUpForThisDay();
+        LogUtils.LogInfo($"{behaviorObject.activeSelf}");
     }
 }
