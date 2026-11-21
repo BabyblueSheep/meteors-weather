@@ -1,6 +1,6 @@
 {
   "name": "Meteor_Showers_as_a_Weather",
-  "version_number": "1.0.0",
+  "version_number": "1.1.1",
   "website_url": "https://github.com/BabyblueSheep/meteors-weather",
   "description": "Turns meteor showers into a proper weather!",
   "dependencies": [
