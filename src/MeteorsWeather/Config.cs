@@ -135,7 +135,8 @@ public class MeteorWeathersConfig
             key: "MeteorScales",
             defaultValue: "8:2:100;16:4:50;16:8:20",
             description: @$"A list of meteor scale configurations, consisting of the average scale, scale deviation and the weight of the configuration.
-            The list is semicolon-separated, and the configurations are colon-separated e.g. ""8:2:100;16:4:20"""
+            The list is semicolon-separated, and the configurations are colon-separated e.g. ""8:2:100;16:4:20""
+            ListSeparator=;"
         );
 
         ClearOrphanedEntries(configFile);
